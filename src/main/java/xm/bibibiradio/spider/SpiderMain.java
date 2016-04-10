@@ -24,12 +24,16 @@ public class SpiderMain {
         opts.addOption("deep", true, "爬取深度");
         opts.addOption("basePath", true, "爬取文件输出目录");
         opts.addOption("getCssQuery", true, "获取数据的css selector（img[src]）");
-        opts.addOption("scanCssQuery", true, "获取下一层url的css selector（a[href]）可空");
+        opts.addOption("scanCssQuery", true, "获取下一层url的css selector（a[href]）默认a[href]");
         opts.addOption("contentTag", true, "抓取数据特征（src）");
-        opts.addOption("filterUrl", true, "url的过滤特征 可空");
-        opts.addOption("host", true, "白名单 可空");
-        opts.addOption("cookie", true, "设置Cookie 可空");
-        opts.addOption("ua", true, "设置ua 可空");
+        opts.addOption("filterUrl", true, "url的过滤特征 默认空");
+        opts.addOption("host", true, "白名单 默认空");
+        opts.addOption("cookie", true, "设置Cookie 默认空");
+        opts.addOption("ua", true, "设置ua 默认空");
+        opts.addOption("interval", true, "发包间隔时间 ms 默认1000");
+        opts.addOption("retry", true, "发包失败重试次数 默认3");
+        opts.addOption("ctimeout", true, "连接超时 ms 默认10000");
+        opts.addOption("stimeout", true, "socket超时时间 ms 默认30000");
 
         BasicParser parser = new BasicParser();
         CommandLine cl;
@@ -89,6 +93,34 @@ public class SpiderMain {
                         "ua",
                         cl.getOptionValue("ua") != null ? cl.getOptionValue("ua")
                             : "");
+                    SpiderConfig
+                    .getConfig()
+                    .getProp()
+                    .put(
+                        "interval",
+                        cl.getOptionValue("interval") != null ? cl.getOptionValue("interval")
+                            : "1000");
+                    SpiderConfig
+                    .getConfig()
+                    .getProp()
+                    .put(
+                        "retry",
+                        cl.getOptionValue("retry") != null ? cl.getOptionValue("retry")
+                            : "3");
+                    SpiderConfig
+                    .getConfig()
+                    .getProp()
+                    .put(
+                        "ctimeout",
+                        cl.getOptionValue("ctimeout") != null ? cl.getOptionValue("ctimeout")
+                            : "10000");
+                    SpiderConfig
+                    .getConfig()
+                    .getProp()
+                    .put(
+                        "stimeout",
+                        cl.getOptionValue("stimeout") != null ? cl.getOptionValue("stimeout")
+                            : "30000");
                     //LOGGER.info(SpiderConfig.getConfig().getProp());
 
                     SpiderManager spider = new SpiderManager();

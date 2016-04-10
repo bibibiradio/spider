@@ -23,11 +23,11 @@ public class WarpedHttpSender {
     public WarpedHttpSender(){
         try {
             httpSender = new HttpSenderFactory().provide("implV1");
-            httpSender.setSendFreq(1000);
+            httpSender.setSendFreq(Integer.valueOf(SpiderConfig.getConfig().getProp().getProperty("interval")));
             httpSender.setCodec(true);
-            httpSender.setRetryTime(3);
-            httpSender.setTimeout(10000);
-            httpSender.setSoTimeout(30000);
+            httpSender.setRetryTime(Integer.valueOf(SpiderConfig.getConfig().getProp().getProperty("retry")));
+            httpSender.setTimeout(Long.valueOf(Integer.valueOf(SpiderConfig.getConfig().getProp().getProperty("ctimeout"))));
+            httpSender.setSoTimeout(Long.valueOf(Integer.valueOf(SpiderConfig.getConfig().getProp().getProperty("stimeout"))));
             httpSender.setAutoRedirect(true);
             
             httpSender.start();

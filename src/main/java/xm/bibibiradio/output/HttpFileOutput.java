@@ -21,12 +21,11 @@ public class HttpFileOutput implements SpiderOutput {
     public void start() throws Exception {
         // TODO Auto-generated method stub
         httpSender = new WarpedHttpSender();
-        File basePathFile = new File(SpiderConfig.getConfig().getProp()
-                .getProperty("basePath"));
-        if(basePathFile.isFile())
-            throw new Exception(SpiderConfig.getConfig().getProp()
-                .getProperty("basePath")+" not a directory");
-        if(!basePathFile.exists()){
+        File basePathFile = new File(SpiderConfig.getConfig().getProp().getProperty("basePath"));
+        if (basePathFile.isFile())
+            throw new Exception(SpiderConfig.getConfig().getProp().getProperty("basePath")
+                                + " not a directory");
+        if (!basePathFile.exists()) {
             basePathFile.mkdirs();
         }
     }
@@ -37,8 +36,9 @@ public class HttpFileOutput implements SpiderOutput {
         OutputStream output = null;
         try {
             ResponseData res = httpSender.send(warpUrl);
-            if (res == null || res.getStatusCode() >= 400){
-                LOGGER.info(new StringBuilder("GET ").append(warpUrl.getUrl().toString()).append(" Fail"));
+            if (res == null || res.getStatusCode() >= 400) {
+                LOGGER.info(new StringBuilder("GET ").append(warpUrl.getUrl().toString()).append(
+                    " Fail"));
                 return;
             }
 
@@ -55,12 +55,13 @@ public class HttpFileOutput implements SpiderOutput {
             output = new FileOutputStream(fileName);
 
             output.write(res.getResponseContent());
-            
-            LOGGER.info(new StringBuilder().append("GET ").append(warpUrl.getUrl().toString()).append("-->").append(fileName));
+
+            LOGGER.info(new StringBuilder().append("GET ").append(warpUrl.getUrl().toString())
+                .append("-->").append(fileName));
         } catch (Exception ex) {
             LOGGER.error("error", ex);
         } finally {
-            if(output != null)
+            if (output != null)
                 output.close();
         }
     }
@@ -68,7 +69,7 @@ public class HttpFileOutput implements SpiderOutput {
     @Override
     public void close() throws Exception {
         // TODO Auto-generated method stub
-        
+
     }
 
 }
