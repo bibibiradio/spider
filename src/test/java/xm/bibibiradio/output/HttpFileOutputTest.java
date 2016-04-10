@@ -22,6 +22,10 @@ public class HttpFileOutputTest {
     @Test
     public void test() {
         SpiderOutput t = SpiderOutputFactory.provide("httpfile");
+        SpiderConfig.getConfig().getProp().put("interval", "1000");
+        SpiderConfig.getConfig().getProp().put("retry", "3");
+        SpiderConfig.getConfig().getProp().put("ctimeout", "10000");
+        SpiderConfig.getConfig().getProp().put("stimeout", "30000");
         SpiderConfig.getConfig().getProp().put("basePath", "/Users/xiaoleixl/projects/java/spider/");
         try {
             t.start();
