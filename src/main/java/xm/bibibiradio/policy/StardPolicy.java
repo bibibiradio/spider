@@ -5,15 +5,19 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import xm.bibibiradio.listener.Listener;
 import xm.bibibiradio.listener.Notifer;
+import xm.bibibiradio.listener.NotiferProxy;
 import xm.bibibiradio.spider.WarpUrl;
 import xm.bibibiradio.util.SpiderConfig;
 
-public class StardPolicy extends Notifer implements SpiderPolicy {
+public class StardPolicy implements SpiderPolicy,Notifer {
     private SpiderPolicy next;
     private String       getCssQuery;
     private String       scanCssQuery;
     private String       contentTag;
+    
+    private Notifer notifer;
 
     private SpiderFilter filter;
 
@@ -24,6 +28,8 @@ public class StardPolicy extends Notifer implements SpiderPolicy {
         getCssQuery = SpiderConfig.getConfig().getProp().getProperty("getCssQuery");
         scanCssQuery = SpiderConfig.getConfig().getProp().getProperty("scanCssQuery");
         contentTag = SpiderConfig.getConfig().getProp().getProperty("contentTag");
+        
+        notifer = new NotiferProxy();
     }
 
     @Override
@@ -55,6 +61,18 @@ public class StardPolicy extends Notifer implements SpiderPolicy {
     public void setNext(SpiderPolicy next) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void register(int eventId, Listener listener) {
+        // TODO Auto-generated method stub
+        notifer.register(eventId, listener);
+    }
+
+    @Override
+    public void notify(int eventId, Object notifyBody) {
+        // TODO Auto-generated method stub
+        notifer.notify(eventId, notifyBody);
     }
 
 }

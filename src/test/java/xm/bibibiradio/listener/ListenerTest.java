@@ -31,7 +31,8 @@ public class ListenerTest {
         
     }
     
-    private class N1 extends Notifer{
+    private class N1 implements Notifer{
+        private Notifer notifer = new NotiferProxy();
         public void doASth(){
             notify(1,"N1 doASth event1");
         }
@@ -39,6 +40,31 @@ public class ListenerTest {
         public void doBSth(){
             notify(2,"N1 doBSth event2");
         }
+
+        @Override
+        public void register(int eventId, Listener listener) {
+            // TODO Auto-generated method stub
+            notifer.register(eventId, listener);
+        }
+
+        @Override
+        public void notify(int eventId, Object notifyBody) {
+            // TODO Auto-generated method stub
+            notifer.notify(eventId, notifyBody);
+        }
+    }
+    
+    private class N2 extends NotiferProxy{
+        
+        public void doASth(){
+            notify(1,"N1 doASth event1");
+        }
+        
+        public void doBSth(){
+            notify(2,"N1 doBSth event2");
+        }
+
+        
     }
     @Before
     public void setUp() throws Exception {
@@ -53,14 +79,23 @@ public class ListenerTest {
         L1 l1 = new L1();
         L2 l2 = new L2();
         N1 n1 = new N1();
+        N2 n2 = new N2();
         
         n1.register(1, l1);
         n1.register(2, l2);
         
+        n2.register(1, l1);
+        n2.register(2, l2);
+        
         n1.doASth();
         n1.doBSth();
         n1.doBSth();
         n1.doASth();
+        
+        n2.doASth();
+        n2.doBSth();
+        n2.doBSth();
+        n2.doASth();
     }
 
 }

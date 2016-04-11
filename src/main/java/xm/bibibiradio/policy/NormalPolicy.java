@@ -6,11 +6,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import xm.bibibiradio.listener.Notifer;
+import xm.bibibiradio.listener.NotiferProxy;
 import xm.bibibiradio.spider.WarpUrl;
 import xm.bibibiradio.util.SpiderConfig;
 
-public class NormalPolicy extends Notifer implements SpiderPolicy {
+public class NormalPolicy extends NotiferProxy implements SpiderPolicy {
     
     private SpiderPolicy next;
     private SpiderFilter filter;
