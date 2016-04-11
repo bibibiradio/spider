@@ -55,12 +55,16 @@ public class StardPolicy implements SpiderPolicy,Notifer {
             if (filter.isNeedScan(warpUrl, html))
                 notify(NEEDSCAN, warpUrl);
         }
+        
+        if(next != null){
+            next.scan(url, html);
+        }
     }
 
     @Override
     public void setNext(SpiderPolicy next) {
         // TODO Auto-generated method stub
-
+        this.next = next;
     }
 
     @Override

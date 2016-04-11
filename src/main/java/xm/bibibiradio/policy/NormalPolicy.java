@@ -18,7 +18,6 @@ public class NormalPolicy implements SpiderPolicy,Notifer {
     private SpiderFilter filter;
     private Notifer notifer;
     public NormalPolicy(){
-        next = null;
         notifer = new NotiferProxy();
     }
     
@@ -51,12 +50,16 @@ public class NormalPolicy implements SpiderPolicy,Notifer {
             if(filter.isNeedOutput(warpUrl, html))
                 notify(NEEDOUTPUT,warpUrl);
         }
+        
+        if(next != null){
+            next.scan(url, html);
+        }
     }
 
     @Override
     public void setNext(SpiderPolicy next) {
         // TODO Auto-generated method stub
-        
+        this.next = next;
     }
 
     @Override
