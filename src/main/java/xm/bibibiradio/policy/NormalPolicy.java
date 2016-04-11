@@ -27,7 +27,6 @@ public class NormalPolicy implements SpiderPolicy,Notifer {
         if(filter == null){
             filter = new StardFilter();
             filter.enableProp(SpiderConfig.getConfig().getProp());
-            ((StardFilter)filter).setHost(url.getUrl().getHost());
         }
         Document doc = Jsoup.parse(html);
         Elements eles = null;
