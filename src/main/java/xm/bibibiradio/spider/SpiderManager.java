@@ -1,5 +1,7 @@
 package xm.bibibiradio.spider;
 
+import java.util.Properties;
+
 import org.apache.log4j.Logger;
 
 import com.bibibiradio.httpsender.ResponseData;
@@ -12,7 +14,6 @@ import xm.bibibiradio.output.SpiderOutputFactory;
 import xm.bibibiradio.policy.SpiderPolicy;
 import xm.bibibiradio.policy.SpiderPolicyFactory;
 import xm.bibibiradio.util.LogFactory;
-import xm.bibibiradio.util.SpiderConfig;
 import xm.bibibiradio.warphttpsender.WarpedHttpSender;
 
 public class SpiderManager implements Listener {
@@ -24,23 +25,26 @@ public class SpiderManager implements Listener {
     private WarpedHttpSender    httpSender;
     private SpiderOutput        output;
 
-    public SpiderManager() {
+    private Properties          prop;
+
+    public SpiderManager(Properties prop) throws Exception {
+        this.prop = prop;
         init();
     }
 
-    private void init() {
-        String policyName = SpiderConfig.getConfig().getProp().getProperty("policyMod");
-        String outputName = SpiderConfig.getConfig().getProp().getProperty("outputMod");
+    private void init() throws Exception {
+        String policyName = prop.getProperty("policyMod");
+        String outputName = prop.getProperty("outputMod");
 
-        policy = SpiderPolicyFactory.provide(policyName);
-        output = SpiderOutputFactory.provide(outputName);
-        MAXDEEP = Integer.valueOf(SpiderConfig.getConfig().getProp().getProperty("deep"));
+        policy = SpiderPolicyFactory.provide(policyName, prop);
+        output = SpiderOutputFactory.provide(outputName, prop);
+        MAXDEEP = Integer.valueOf(prop.getProperty("deep"));
 
         ((Notifer) policy).register(SpiderPolicy.NEEDOUTPUT, this);
         ((Notifer) policy).register(SpiderPolicy.NEEDSCAN, this);
 
         urlPool = new UrlPool();
-        httpSender = new WarpedHttpSender();
+        httpSender = new WarpedHttpSender(prop);
     }
 
     public void spider(String url) {
@@ -105,7 +109,8 @@ public class SpiderManager implements Listener {
     }
 
     public void notifyDoNeedScan(WarpUrl warpUrl) {
-        if(urlPool.add(warpUrl))
-            LOGGER.info(new StringBuilder().append("will spider ").append(warpUrl.getUrl().toString()));
+        if (urlPool.add(warpUrl))
+            LOGGER.info(new StringBuilder().append("will spider ").append(
+                warpUrl.getUrl().toString()));
     }
 }

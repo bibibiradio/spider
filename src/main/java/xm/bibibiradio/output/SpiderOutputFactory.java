@@ -1,11 +1,13 @@
 package xm.bibibiradio.output;
 
+import java.util.Properties;
+
 public class SpiderOutputFactory {
-    public static SpiderOutput provide(String outputType){
+    public static SpiderOutput provide(String outputType,Properties prop){
         if(outputType.equals("file"))
-            return new FileOutput();
+            return new FileOutput(prop);
         else if(outputType.equals("httpfile"))
-            return new HttpFileOutput();
+            return new HttpFileOutput(prop);
         else
             return null;
     }

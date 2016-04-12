@@ -3,6 +3,7 @@ package xm.bibibiradio.output;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -10,21 +11,24 @@ import com.bibibiradio.httpsender.ResponseData;
 
 import xm.bibibiradio.spider.WarpUrl;
 import xm.bibibiradio.util.LogFactory;
-import xm.bibibiradio.util.SpiderConfig;
 import xm.bibibiradio.warphttpsender.WarpedHttpSender;
 
 public class HttpFileOutput implements SpiderOutput {
     final static private Logger LOGGER = LogFactory.provide(HttpFileOutput.class);
     private WarpedHttpSender    httpSender;
+    private Properties          prop;
+
+    public HttpFileOutput(Properties prop) {
+        this.prop = prop;
+    }
 
     @Override
     public void start() throws Exception {
         // TODO Auto-generated method stub
-        httpSender = new WarpedHttpSender();
-        File basePathFile = new File(SpiderConfig.getConfig().getProp().getProperty("basePath"));
+        httpSender = new WarpedHttpSender(prop);
+        File basePathFile = new File(prop.getProperty("basePath"));
         if (basePathFile.isFile())
-            throw new Exception(SpiderConfig.getConfig().getProp().getProperty("basePath")
-                                + " not a directory");
+            throw new Exception(prop.getProperty("basePath") + " not a directory");
         if (!basePathFile.exists()) {
             basePathFile.mkdirs();
         }
@@ -42,8 +46,7 @@ public class HttpFileOutput implements SpiderOutput {
                 return;
             }
 
-            StringBuilder sb = new StringBuilder(SpiderConfig.getConfig().getProp()
-                .getProperty("basePath"));
+            StringBuilder sb = new StringBuilder(prop.getProperty("basePath"));
             sb.append(warpUrl.getDeep());
             sb.append("httpfile");
             sb.append(warpUrl.getUrl().getPath() != null ? warpUrl.getUrl().getPath()

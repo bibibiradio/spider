@@ -1,12 +1,12 @@
 package xm.bibibiradio.warphttpsender;
 
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
 import xm.bibibiradio.spider.WarpUrl;
 import xm.bibibiradio.util.LogFactory;
-import xm.bibibiradio.util.SpiderConfig;
 
 import com.bibibiradio.httpsender.HttpSender;
 import com.bibibiradio.httpsender.HttpSenderFactory;
@@ -17,23 +17,24 @@ public class WarpedHttpSender {
     private HttpSender httpSender;
     private String cookie;
     private String ua;
+    private Properties prop;
     
     private HashMap<String,String> header;
     
-    public WarpedHttpSender(){
+    public WarpedHttpSender(Properties prop) throws Exception{
         try {
             httpSender = new HttpSenderFactory().provide("implV1");
-            httpSender.setSendFreq(Integer.valueOf(SpiderConfig.getConfig().getProp().getProperty("interval")));
+            httpSender.setSendFreq(Integer.valueOf(this.prop.getProperty("interval")));
             httpSender.setCodec(true);
-            httpSender.setRetryTime(Integer.valueOf(SpiderConfig.getConfig().getProp().getProperty("retry")));
-            httpSender.setTimeout(Long.valueOf(Integer.valueOf(SpiderConfig.getConfig().getProp().getProperty("ctimeout"))));
-            httpSender.setSoTimeout(Long.valueOf(Integer.valueOf(SpiderConfig.getConfig().getProp().getProperty("stimeout"))));
+            httpSender.setRetryTime(Integer.valueOf(this.prop.getProperty("retry")));
+            httpSender.setTimeout(Long.valueOf(Integer.valueOf(this.prop.getProperty("ctimeout"))));
+            httpSender.setSoTimeout(Long.valueOf(Integer.valueOf(this.prop.getProperty("stimeout"))));
             httpSender.setAutoRedirect(true);
             
             httpSender.start();
             
-            cookie = SpiderConfig.getConfig().getProp().getProperty("cookie");
-            ua = SpiderConfig.getConfig().getProp().getProperty("ua");
+            cookie = this.prop.getProperty("cookie");
+            ua = this.prop.getProperty("ua");
             
             if(cookie != null && !cookie.equals("")){
                 if(header == null)

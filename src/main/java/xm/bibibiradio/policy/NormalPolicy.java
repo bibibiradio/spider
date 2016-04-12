@@ -1,6 +1,8 @@
 package xm.bibibiradio.policy;
 
 
+import java.util.Properties;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -10,14 +12,15 @@ import xm.bibibiradio.listener.Listener;
 import xm.bibibiradio.listener.Notifer;
 import xm.bibibiradio.listener.NotiferProxy;
 import xm.bibibiradio.spider.WarpUrl;
-import xm.bibibiradio.util.SpiderConfig;
 
 public class NormalPolicy implements SpiderPolicy,Notifer {
     
     private SpiderPolicy next;
+    private Properties prop;
     private SpiderFilter filter;
     private Notifer notifer;
-    public NormalPolicy(){
+    public NormalPolicy(Properties prop){
+        this.prop = prop;
         notifer = new NotiferProxy();
     }
     
@@ -26,7 +29,7 @@ public class NormalPolicy implements SpiderPolicy,Notifer {
         // TODO Auto-generated method stub
         if(filter == null){
             filter = new StardFilter();
-            filter.enableProp(SpiderConfig.getConfig().getProp());
+            filter.enableProp(prop);
         }
         Document doc = Jsoup.parse(html);
         Elements eles = null;

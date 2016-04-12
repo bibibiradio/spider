@@ -1,5 +1,7 @@
 package xm.bibibiradio.policy;
 
+import java.util.Properties;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -9,25 +11,28 @@ import xm.bibibiradio.listener.Listener;
 import xm.bibibiradio.listener.Notifer;
 import xm.bibibiradio.listener.NotiferProxy;
 import xm.bibibiradio.spider.WarpUrl;
-import xm.bibibiradio.util.SpiderConfig;
+import xm.bibibiradio.util.GlobalConfig;
 
 public class StardPolicy implements SpiderPolicy,Notifer {
     private SpiderPolicy next;
     private String       getCssQuery;
     private String       scanCssQuery;
     private String       contentTag;
+    private Properties prop;
     
     private Notifer notifer;
 
     private SpiderFilter filter;
 
-    public StardPolicy() {
+    public StardPolicy(Properties prop) {
+        this.prop = prop;
+        
         filter = new StardFilter();
-        filter.enableProp(SpiderConfig.getConfig().getProp());
+        filter.enableProp(GlobalConfig.getConfig().getProp());
 
-        getCssQuery = SpiderConfig.getConfig().getProp().getProperty("getCssQuery");
-        scanCssQuery = SpiderConfig.getConfig().getProp().getProperty("scanCssQuery");
-        contentTag = SpiderConfig.getConfig().getProp().getProperty("contentTag");
+        getCssQuery = this.prop.getProperty("getCssQuery");
+        scanCssQuery = this.prop.getProperty("scanCssQuery");
+        contentTag = this.prop.getProperty("contentTag");
         
         notifer = new NotiferProxy();
     }

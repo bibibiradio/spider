@@ -6,6 +6,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import xm.bibibiradio.util.GlobalConfig;
+
 public class SpiderManagerTest {
 
     @Before
@@ -18,8 +20,14 @@ public class SpiderManagerTest {
 
     @Test
     public void test() {
-        SpiderManager spider = new SpiderManager();
-        spider.spider("https://www.taobao.com");
+        SpiderManager spider;
+        try {
+            spider = new SpiderManager(GlobalConfig.getConfig().getProp());
+            spider.spider("https://www.taobao.com");
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }

@@ -1,7 +1,5 @@
 package xm.bibibiradio.spider;
 
-import java.net.URL;
-
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -9,7 +7,7 @@ import org.apache.commons.cli.Options;
 import org.apache.log4j.Logger;
 
 import xm.bibibiradio.util.LogFactory;
-import xm.bibibiradio.util.SpiderConfig;
+import xm.bibibiradio.util.GlobalConfig;
 
 public class SpiderMain {
     static private final Logger LOGGER = LogFactory.provide(SpiderMain.class);
@@ -45,26 +43,26 @@ public class SpiderMain {
                     HelpFormatter hf = new HelpFormatter();
                     hf.printHelp("Options", opts);
                 } else {
-                    SpiderConfig.getConfig().getProp().put("url", cl.getOptionValue("url"));
-                    SpiderConfig.getConfig().getProp()
+                    GlobalConfig.getConfig().getProp().put("url", cl.getOptionValue("url"));
+                    GlobalConfig.getConfig().getProp()
                         .put("policyMod", cl.getOptionValue("policyMod"));
-                    SpiderConfig.getConfig().getProp()
+                    GlobalConfig.getConfig().getProp()
                         .put("outputMod", cl.getOptionValue("outputMod"));
-                    SpiderConfig.getConfig().getProp().put("deep", cl.getOptionValue("deep"));
-                    SpiderConfig.getConfig().getProp()
+                    GlobalConfig.getConfig().getProp().put("deep", cl.getOptionValue("deep"));
+                    GlobalConfig.getConfig().getProp()
                         .put("basePath", cl.getOptionValue("basePath"));
-                    SpiderConfig.getConfig().getProp()
+                    GlobalConfig.getConfig().getProp()
                         .put("getCssQuery", cl.getOptionValue("getCssQuery"));
-                    SpiderConfig
+                    GlobalConfig
                         .getConfig()
                         .getProp()
                         .put(
                             "scanCssQuery",
                             cl.getOptionValue("scanCssQuery") != null ? cl
                                 .getOptionValue("scanCssQuery") : "a[href]");
-                    SpiderConfig.getConfig().getProp()
+                    GlobalConfig.getConfig().getProp()
                         .put("contentTag", cl.getOptionValue("contentTag"));
-                    SpiderConfig
+                    GlobalConfig
                         .getConfig()
                         .getProp()
                         .put(
@@ -72,49 +70,49 @@ public class SpiderMain {
                             cl.getOptionValue("filterUrl") != null ? cl.getOptionValue("filterUrl")
                                 : "");
 
-                    SpiderConfig
+                    GlobalConfig
                         .getConfig()
                         .getProp()
                         .put(
                             "host",
                             cl.getOptionValue("host") != null ? cl.getOptionValue("host")
                                 : "");
-                    SpiderConfig
+                    GlobalConfig
                     .getConfig()
                     .getProp()
                     .put(
                         "cookie",
                         cl.getOptionValue("cookie") != null ? cl.getOptionValue("ua")
                             : "");
-                    SpiderConfig
+                    GlobalConfig
                     .getConfig()
                     .getProp()
                     .put(
                         "ua",
                         cl.getOptionValue("ua") != null ? cl.getOptionValue("ua")
                             : "");
-                    SpiderConfig
+                    GlobalConfig
                     .getConfig()
                     .getProp()
                     .put(
                         "interval",
                         cl.getOptionValue("interval") != null ? cl.getOptionValue("interval")
                             : "1000");
-                    SpiderConfig
+                    GlobalConfig
                     .getConfig()
                     .getProp()
                     .put(
                         "retry",
                         cl.getOptionValue("retry") != null ? cl.getOptionValue("retry")
                             : "3");
-                    SpiderConfig
+                    GlobalConfig
                     .getConfig()
                     .getProp()
                     .put(
                         "ctimeout",
                         cl.getOptionValue("ctimeout") != null ? cl.getOptionValue("ctimeout")
                             : "10000");
-                    SpiderConfig
+                    GlobalConfig
                     .getConfig()
                     .getProp()
                     .put(
@@ -123,8 +121,8 @@ public class SpiderMain {
                             : "30000");
                     //LOGGER.info(SpiderConfig.getConfig().getProp());
 
-                    SpiderManager spider = new SpiderManager();
-                    spider.spider(SpiderConfig.getConfig().getProp().getProperty("url"));
+                    SpiderManager spider = new SpiderManager(GlobalConfig.getConfig().getProp());
+                    spider.spider(GlobalConfig.getConfig().getProp().getProperty("url"));
                 }
             }
         } catch (Exception ex) {

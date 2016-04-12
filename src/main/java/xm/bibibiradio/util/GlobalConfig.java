@@ -2,20 +2,20 @@ package xm.bibibiradio.util;
 
 import java.util.Properties;
 
-public class SpiderConfig {
+public class GlobalConfig {
     private Properties prop;
     
-    private static SpiderConfig config;
+    private static GlobalConfig config;
     
-    static public SpiderConfig getConfig(){
+    static public GlobalConfig getConfig(){
         if(config == null){
-            config = new SpiderConfig();
+            config = new GlobalConfig();
             config.init();
         }
         return config;
     }
     
-    public SpiderConfig(){
+    public GlobalConfig(){
         prop = new Properties();
     }
     
