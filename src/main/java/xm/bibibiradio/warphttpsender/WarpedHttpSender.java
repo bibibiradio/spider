@@ -23,6 +23,7 @@ public class WarpedHttpSender {
     
     public WarpedHttpSender(Properties prop) throws Exception{
         try {
+            this.prop = prop;
             httpSender = new HttpSenderFactory().provide("implV1");
             httpSender.setSendFreq(Integer.valueOf(this.prop.getProperty("interval")));
             httpSender.setCodec(true);

@@ -8,4 +8,5 @@ public interface SpiderFilter {
     public boolean isNeedOutput(WarpUrl warpUrl,String html);
     public boolean isNeedScan(WarpUrl warpUrl,String html);
     public void enableProp(Properties prop);
+    public void setMyId(int myId);
 }

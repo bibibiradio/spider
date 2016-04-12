@@ -35,13 +35,21 @@ public class SpiderManager implements Listener {
     private void init() throws Exception {
         String policyName = prop.getProperty("policyMod");
         String outputName = prop.getProperty("outputMod");
+        
+        SpiderPolicy last = null;
+        String[] policys = policyName.split(",");
+        for(String pName : policys){
+            policy = SpiderPolicyFactory.provide(pName, prop);
+            if(last != null && policy != null){
+                last.setNext(policy);
+            }
+            ((Notifer) policy).register(SpiderPolicy.NEEDOUTPUT, this);
+            ((Notifer) policy).register(SpiderPolicy.NEEDSCAN, this);
+            last = policy;
+        }
 
-        policy = SpiderPolicyFactory.provide(policyName, prop);
         output = SpiderOutputFactory.provide(outputName, prop);
         MAXDEEP = Integer.valueOf(prop.getProperty("deep"));
-
-        ((Notifer) policy).register(SpiderPolicy.NEEDOUTPUT, this);
-        ((Notifer) policy).register(SpiderPolicy.NEEDSCAN, this);
 
         urlPool = new UrlPool();
         httpSender = new WarpedHttpSender(prop);

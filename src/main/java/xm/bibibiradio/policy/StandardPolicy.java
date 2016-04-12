@@ -1,5 +1,6 @@
 package xm.bibibiradio.policy;
 
+import java.util.ArrayList;
 import java.util.Properties;
 
 import org.jsoup.Jsoup;
@@ -7,33 +8,46 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import xm.bibibiradio.executechain.ExecuteChain;
 import xm.bibibiradio.listener.Listener;
 import xm.bibibiradio.listener.Notifer;
 import xm.bibibiradio.listener.NotiferProxy;
 import xm.bibibiradio.spider.WarpUrl;
 import xm.bibibiradio.util.GlobalConfig;
 
-public class StardPolicy implements SpiderPolicy,Notifer {
+public class StandardPolicy implements SpiderPolicy, Notifer, ExecuteChain {
     private SpiderPolicy next;
     private String       getCssQuery;
     private String       scanCssQuery;
-    private String       contentTag;
-    private Properties prop;
-    
-    private Notifer notifer;
+    private String       getContentTag;
+    private String       scanContentTag;
+    private Properties   prop;
+
+    private int          myId = -1;
+
+    private Notifer      notifer;
 
     private SpiderFilter filter;
 
-    public StardPolicy(Properties prop) {
+    public StandardPolicy(Properties prop,int myId) throws Exception {
         this.prop = prop;
-        
-        filter = new StardFilter();
-        filter.enableProp(GlobalConfig.getConfig().getProp());
+        this.myId = myId;
 
-        getCssQuery = this.prop.getProperty("getCssQuery");
-        scanCssQuery = this.prop.getProperty("scanCssQuery");
-        contentTag = this.prop.getProperty("contentTag");
-        
+        filter = new StandardFilter(myId);
+        filter.enableProp(GlobalConfig.getConfig().getProp());
+        if(myId == -1){
+            getCssQuery = this.prop.getProperty("getCssQuery");
+            scanCssQuery = this.prop.getProperty("scanCssQuery");
+            getContentTag = this.prop.getProperty("contentTag");
+            scanContentTag = "href";
+        }else{
+            ArrayList<String> policyConfig = PolicyParser.getPolicyParser().parse(prop).get(myId);
+            scanCssQuery = policyConfig.get(1);
+            scanContentTag = policyConfig.get(2);
+            getCssQuery = policyConfig.get(3);
+            getContentTag = policyConfig.get(4);
+        }
+
         notifer = new NotiferProxy();
     }
 
@@ -45,23 +59,23 @@ public class StardPolicy implements SpiderPolicy,Notifer {
 
         eles = doc.select(getCssQuery);
         for (Element ele : eles) {
-            WarpUrl warpUrl = new WarpUrl(ele.attr(contentTag), url);
+            WarpUrl warpUrl = new WarpUrl(ele.attr(getContentTag), url);
             if (warpUrl.getUrl() == null)
                 continue;
-            if (filter.isNeedOutput(warpUrl, html))
+            if (filter.isNeedOutput(warpUrl, ele.toString()))
                 notify(NEEDOUTPUT, warpUrl);
         }
 
         eles = doc.select(scanCssQuery);
         for (Element ele : eles) {
-            WarpUrl warpUrl = new WarpUrl(ele.attr("href"), url);
+            WarpUrl warpUrl = new WarpUrl(ele.attr(scanContentTag), url);
             if (warpUrl.getUrl() == null)
                 continue;
-            if (filter.isNeedScan(warpUrl, html))
+            if (filter.isNeedScan(warpUrl, ele.toString()))
                 notify(NEEDSCAN, warpUrl);
         }
-        
-        if(next != null){
+
+        if (next != null) {
             next.scan(url, html);
         }
     }
@@ -83,5 +97,18 @@ public class StardPolicy implements SpiderPolicy,Notifer {
         // TODO Auto-generated method stub
         notifer.notify(eventId, notifyBody);
     }
+
+    public int getMyId() {
+        return myId;
+    }
+
+    public void setMyId(int myId) {
+        this.myId = myId;
+        if(myId > 0){
+            
+        }
+    }
+    
+    
 
 }

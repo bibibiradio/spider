@@ -1,13 +1,24 @@
 package xm.bibibiradio.policy;
 
+import java.util.ArrayList;
 import java.util.Properties;
 
-import xm.bibibiradio.spider.WarpUrl;
+import org.apache.log4j.Logger;
 
-class StardFilter implements SpiderFilter {
-    private Properties prop;
-    private String     outputWhiteUrl, outputWhiteHtml, outputBlackUrl, outputBlackHtml;
-    private String     scanWhiteUrl, scanWhiteHtml, scanBlackUrl, scanBlackHtml;
+import xm.bibibiradio.spider.WarpUrl;
+import xm.bibibiradio.util.LogFactory;
+
+class StandardFilter implements SpiderFilter {
+    final static Logger LOGGER = LogFactory.provide(StandardFilter.class);
+
+    private Properties  prop;
+    private String      outputWhiteUrl, outputWhiteHtml, outputBlackUrl, outputBlackHtml;
+    private String      scanWhiteUrl, scanWhiteHtml, scanBlackUrl, scanBlackHtml;
+    private int         myId;
+
+    public StandardFilter(int myId) {
+        this.myId = myId;
+    }
 
     @Override
     public boolean isNeedOutput(WarpUrl warpUrl, String html) {
@@ -38,9 +49,23 @@ class StardFilter implements SpiderFilter {
     @Override
     public void enableProp(Properties prop) {
         // TODO Auto-generated method stub
-//        host = prop.getProperty("host").equals("") ? null : prop.getProperty("host");
-//        filterUrl = prop.getProperty("filterUrl").equals("") ? null : prop.getProperty("filterUrl");
+        //        host = prop.getProperty("host").equals("") ? null : prop.getProperty("host");
+        //        filterUrl = prop.getProperty("filterUrl").equals("") ? null : prop.getProperty("filterUrl");
         this.prop = prop;
+        try {
+            ArrayList<String> config = PolicyParser.getPolicyParser().parse(prop).get(myId);
+            outputWhiteUrl = config.get(5).equals("") ? null : config.get(5);
+            outputBlackUrl = config.get(6).equals("") ? null : config.get(5);
+            outputWhiteHtml = config.get(7).equals("") ? null : config.get(5);
+            outputBlackHtml = config.get(8).equals("") ? null : config.get(5);
+            scanWhiteUrl = config.get(9).equals("") ? null : config.get(5);
+            scanBlackUrl = config.get(10).equals("") ? null : config.get(5);
+            scanWhiteHtml = config.get(11).equals("") ? null : config.get(5);
+            scanBlackHtml = config.get(12).equals("") ? null : config.get(5);
+        } catch (Exception ex) {
+            LOGGER.error("error", ex);
+        }
+
     }
 
     public Properties getProp() {
@@ -115,6 +140,10 @@ class StardFilter implements SpiderFilter {
         this.scanBlackHtml = scanBlackHtml;
     }
 
-    
+    @Override
+    public void setMyId(int myId) {
+        // TODO Auto-generated method stub
+        this.myId = myId;
+    }
 
 }
