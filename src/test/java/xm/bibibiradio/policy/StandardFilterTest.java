@@ -22,9 +22,9 @@ public class StandardFilterTest {
 
     @Test
     public void test() {
-        String html = "<a id=\"3\"><img src=3 />123</a>";
+        String html = "<a id=\"3\" data-level=\"2.1\"><img src=3 />123</a>";
         Document doc = Jsoup.parse(html);
-        Elements eles = doc.select("a#3");
+        Elements eles = doc.select("a[data-level^=2.]");
         for(Element ele : eles){
             System.out.println(ele.toString());
             System.out.println(ele.text());

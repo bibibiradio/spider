@@ -113,10 +113,12 @@ public class StandardPolicy implements SpiderPolicy, Notifer, ExecuteChain {
                 Elements inners = ele.select(getContentTagCssQuery);
                 for (Element inner : inners) {
                     WarpUrl warpUrl;
-                    if(getContentTagLay2 == 0)
+                    if(getContentTagLay2 == 0){
                         warpUrl = new WarpUrl(inner.text(), url);
-                    else{
+                        warpUrl.setContent(inner.text());
+                    }else{
                         warpUrl = new WarpUrl(inner.attr(getContentTagTarget), url);
+                        warpUrl.setContent(inner.attr(getContentTagTarget));
                     }
                     if (warpUrl.getUrl() == null)
                         continue;
@@ -125,10 +127,13 @@ public class StandardPolicy implements SpiderPolicy, Notifer, ExecuteChain {
                 }
             } else {
                 WarpUrl warpUrl;
-                if(getContentTagLay2 == 0)
+                if(getContentTagLay2 == 0){
                     warpUrl = new WarpUrl(ele.text(), url);
-                else
+                    warpUrl.setContent(ele.text());
+                }else{
                     warpUrl = new WarpUrl(ele.attr(getContentTagTarget), url);
+                    warpUrl.setContent(ele.attr(getContentTagTarget));
+                }
                 
                 if (warpUrl.getUrl() == null)
                     continue;

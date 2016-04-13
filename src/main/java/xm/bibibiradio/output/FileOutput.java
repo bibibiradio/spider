@@ -13,14 +13,16 @@ public class FileOutput implements SpiderOutput {
 
     public FileOutput(Properties prop) {
         this.prop = prop;
-        fileName = this.prop.getProperty("output");
+        fileName = this.prop.getProperty("basePath");
     }
 
     @Override
     public void output(WarpUrl warpUrl) throws Exception {
         // TODO Auto-generated method stub
-        output.write((warpUrl.getDeep() + "  " + warpUrl.getUrl().toString() + "\r\n")
-            .getBytes("UTF-8"));
+//        output.write((warpUrl.getDeep() + "  " + warpUrl.getUrl().toString() + "\r\n")
+//            .getBytes("UTF-8"));
+        output.write((warpUrl.getContent() + "\r\n")
+          .getBytes("UTF-8"));
     }
 
     @Override

@@ -28,6 +28,7 @@ public class SpiderMain {
         opts.addOption("retry", true, "发包失败重试次数 默认3");
         opts.addOption("ctimeout", true, "连接超时 ms 默认10000");
         opts.addOption("stimeout", true, "socket超时时间 ms 默认30000");
+        opts.addOption("output", true, "file mod输出");
 
         BasicParser parser = new BasicParser();
         CommandLine cl;
@@ -53,7 +54,12 @@ public class SpiderMain {
                         .getConfig()
                         .getProp()
                         .put("cookie",
-                            cl.getOptionValue("cookie") != null ? cl.getOptionValue("ua") : "");
+                            cl.getOptionValue("cookie") != null ? cl.getOptionValue("cookie") : "");
+                    GlobalConfig
+                    .getConfig()
+                    .getProp()
+                    .put("output",
+                        cl.getOptionValue("output") != null ? cl.getOptionValue("output") : "");
                     GlobalConfig.getConfig().getProp()
                         .put("ua", cl.getOptionValue("ua") != null ? cl.getOptionValue("ua") : "");
                     GlobalConfig

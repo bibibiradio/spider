@@ -6,9 +6,7 @@ public class SpiderPolicyFactory {
     private static int id = 0;
     public static SpiderPolicy provide(String policyType,Properties prop) throws Exception{
         SpiderPolicy newPolicy;
-        if(policyType.equals("normal"))
-            newPolicy = new NormalPolicy(prop,id++);
-        else if(policyType.equals("std"))
+        if(policyType.equals("std"))
             newPolicy = new StandardPolicy(prop,id++);
         else
             return null;

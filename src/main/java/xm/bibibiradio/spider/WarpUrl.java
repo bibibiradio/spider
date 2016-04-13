@@ -11,11 +11,16 @@ public class WarpUrl {
     final private Logger LOGGER = LogFactory.provide(WarpUrl.class);
     private URL url;
     private int deep;
+    private String content;
     public WarpUrl(String urlStr,WarpUrl parent){
         if(parent == null){
             deep = 0;
         }else{
             deep = parent.getDeep() + 1;
+        }
+        
+        if(urlStr == null){
+            return;
         }
         
         try{
@@ -38,7 +43,7 @@ public class WarpUrl {
     public URL getUrl() {
         return url;
     }
-    public void URL(URL url) {
+    public void setURL(URL url) {
         this.url = url;
     }
     public int getDeep() {
@@ -46,6 +51,12 @@ public class WarpUrl {
     }
     public void setDeep(int deep) {
         this.deep = deep;
+    }
+    public String getContent() {
+        return content;
+    }
+    public void setContent(String content) {
+        this.content = content;
     }
     
 }
