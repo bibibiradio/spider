@@ -2,6 +2,9 @@ package xm.bibibiradio.output;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +38,17 @@ public class HttpFileOutputTest {
             e.printStackTrace();
         }
         
+    }
+    
+    @Test
+    public void test2(){
+        File file = new File("./../../../");
+        try {
+            System.out.println(file.getCanonicalPath());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }

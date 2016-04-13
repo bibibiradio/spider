@@ -27,6 +27,7 @@ public class StandardFilterTest {
         Elements eles = doc.select("a#3");
         for(Element ele : eles){
             System.out.println(ele.toString());
+            System.out.println(ele.text());
         }
     }
 
