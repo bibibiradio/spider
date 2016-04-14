@@ -26,7 +26,7 @@ class StandardFilter implements SpiderFilter {
         if ((outputWhiteUrl == null || warpUrl.getUrl().toString().indexOf(outputWhiteUrl) != -1)
             && (outputBlackUrl == null || warpUrl.getUrl().toString().indexOf(outputBlackUrl) == -1)
             && (outputWhiteHtml == null || html.indexOf(outputWhiteHtml) != -1)
-            && (outputBlackHtml == null || html.indexOf(outputBlackHtml) != -1)) {
+            && (outputBlackHtml == null || html.indexOf(outputBlackHtml) == -1)) {
             return true;
         } else {
             return false;
@@ -39,7 +39,7 @@ class StandardFilter implements SpiderFilter {
         if ((scanWhiteUrl == null || warpUrl.getUrl().toString().indexOf(scanWhiteUrl) != -1)
             && (scanBlackUrl == null || warpUrl.getUrl().toString().indexOf(scanBlackUrl) == -1)
             && (scanWhiteHtml == null || html.indexOf(scanWhiteHtml) != -1)
-            && (scanBlackHtml == null || html.indexOf(scanBlackHtml) != -1)) {
+            && (scanBlackHtml == null || html.indexOf(scanBlackHtml) == -1)) {
             return true;
         } else {
             return false;
