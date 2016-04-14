@@ -23,10 +23,10 @@ class StandardFilter implements SpiderFilter {
     @Override
     public boolean isNeedOutput(WarpUrl warpUrl, String html) {
         // TODO Auto-generated method stub
-        if ((outputWhiteUrl == null || warpUrl.getUrl().getHost().indexOf(outputWhiteUrl) != -1)
+        if ((outputWhiteUrl == null || warpUrl.getUrl().toString().indexOf(outputWhiteUrl) != -1)
             && (outputBlackUrl == null || warpUrl.getUrl().toString().indexOf(outputBlackUrl) == -1)
-            && (outputWhiteHtml == null || warpUrl.getUrl().getHost().indexOf(outputWhiteHtml) != -1)
-            && (outputBlackHtml == null || warpUrl.getUrl().getHost().indexOf(outputBlackHtml) != -1)) {
+            && (outputWhiteHtml == null || html.indexOf(outputWhiteHtml) != -1)
+            && (outputBlackHtml == null || html.indexOf(outputBlackHtml) != -1)) {
             return true;
         } else {
             return false;
@@ -36,10 +36,10 @@ class StandardFilter implements SpiderFilter {
     @Override
     public boolean isNeedScan(WarpUrl warpUrl, String html) {
         // TODO Auto-generated method stub
-        if ((scanWhiteUrl == null || warpUrl.getUrl().getHost().indexOf(scanWhiteUrl) != -1)
+        if ((scanWhiteUrl == null || warpUrl.getUrl().toString().indexOf(scanWhiteUrl) != -1)
             && (scanBlackUrl == null || warpUrl.getUrl().toString().indexOf(scanBlackUrl) == -1)
-            && (scanWhiteHtml == null || warpUrl.getUrl().getHost().indexOf(scanWhiteHtml) != -1)
-            && (scanBlackHtml == null || warpUrl.getUrl().getHost().indexOf(scanBlackHtml) != -1)) {
+            && (scanWhiteHtml == null || html.indexOf(scanWhiteHtml) != -1)
+            && (scanBlackHtml == null || html.indexOf(scanBlackHtml) != -1)) {
             return true;
         } else {
             return false;
@@ -55,13 +55,13 @@ class StandardFilter implements SpiderFilter {
         try {
             ArrayList<String> config = PolicyParser.getPolicyParser().parse(prop).get(myId);
             outputWhiteUrl = config.get(5).equals("") ? null : config.get(5);
-            outputBlackUrl = config.get(6).equals("") ? null : config.get(5);
-            outputWhiteHtml = config.get(7).equals("") ? null : config.get(5);
-            outputBlackHtml = config.get(8).equals("") ? null : config.get(5);
-            scanWhiteUrl = config.get(9).equals("") ? null : config.get(5);
-            scanBlackUrl = config.get(10).equals("") ? null : config.get(5);
-            scanWhiteHtml = config.get(11).equals("") ? null : config.get(5);
-            scanBlackHtml = config.get(12).equals("") ? null : config.get(5);
+            outputBlackUrl = config.get(6).equals("") ? null : config.get(6);
+            outputWhiteHtml = config.get(7).equals("") ? null : config.get(7);
+            outputBlackHtml = config.get(8).equals("") ? null : config.get(8);
+            scanWhiteUrl = config.get(9).equals("") ? null : config.get(9);
+            scanBlackUrl = config.get(10).equals("") ? null : config.get(10);
+            scanWhiteHtml = config.get(11).equals("") ? null : config.get(11);
+            scanBlackHtml = config.get(12).equals("") ? null : config.get(12);
         } catch (Exception ex) {
             LOGGER.error("error", ex);
         }

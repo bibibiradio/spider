@@ -37,15 +37,21 @@ public class SpiderManager implements Listener {
         String outputName = prop.getProperty("outputMod");
         
         SpiderPolicy last = null;
+        SpiderPolicy tmp = null;
         String[] policys = policyName.split(",");
+        int n = 0;
         for(String pName : policys){
-            policy = SpiderPolicyFactory.provide(pName, prop);
-            if(last != null && policy != null){
-                last.setNext(policy);
+            tmp = SpiderPolicyFactory.provide(pName, prop);
+            if(tmp != null && n == 0){
+                policy = tmp;
             }
-            ((Notifer) policy).register(SpiderPolicy.NEEDOUTPUT, this);
-            ((Notifer) policy).register(SpiderPolicy.NEEDSCAN, this);
-            last = policy;
+            if(last != null && tmp != null){
+                last.setNext(tmp);
+            }
+            ((Notifer) tmp).register(SpiderPolicy.NEEDOUTPUT, this);
+            ((Notifer) tmp).register(SpiderPolicy.NEEDSCAN, this);
+            last = tmp;
+            n++;
         }
 
         output = SpiderOutputFactory.provide(outputName, prop);
