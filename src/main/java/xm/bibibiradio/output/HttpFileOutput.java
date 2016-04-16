@@ -26,11 +26,13 @@ public class HttpFileOutput implements SpiderOutput {
     public void start() throws Exception {
         // TODO Auto-generated method stub
         httpSender = new WarpedHttpSender(prop);
-        File basePathFile = new File(prop.getProperty("basePath"));
-        if (basePathFile.isFile())
-            throw new Exception(prop.getProperty("basePath") + " not a directory");
-        if (!basePathFile.exists()) {
-            basePathFile.mkdirs();
+        synchronized (HttpFileOutput.class) {
+            File basePathFile = new File(prop.getProperty("basePath"));
+            if (basePathFile.isFile())
+                throw new Exception(prop.getProperty("basePath") + " not a directory");
+            if (!basePathFile.exists()) {
+                basePathFile.mkdirs();
+            }
         }
     }
 

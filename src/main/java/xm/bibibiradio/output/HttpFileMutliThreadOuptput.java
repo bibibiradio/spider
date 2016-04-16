@@ -58,13 +58,6 @@ public class HttpFileMutliThreadOuptput implements SpiderOutput {
     @Override
     public void start() throws Exception {
         // TODO Auto-generated method stub
-        File basePathFile = new File(prop.getProperty("basePath"));
-        if (basePathFile.isFile())
-            throw new Exception(prop.getProperty("basePath") + " not a directory");
-        if (!basePathFile.exists()) {
-            basePathFile.mkdirs();
-        }
-
         threadNum = Integer.valueOf(prop.getProperty("thread"));
         threadPool = Executors.newFixedThreadPool(threadNum);
         spiderOutputPool = new GenericObjectPool<SpiderOutput>(new SpiderOutputPoolFactory(prop));
