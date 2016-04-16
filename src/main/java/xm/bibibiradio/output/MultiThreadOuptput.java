@@ -1,6 +1,5 @@
 package xm.bibibiradio.output;
 
-import java.io.File;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,9 +10,9 @@ import org.apache.log4j.Logger;
 import xm.bibibiradio.spider.WarpUrl;
 import xm.bibibiradio.util.LogFactory;
 
-public class HttpFileMutliThreadOuptput implements SpiderOutput {
+public class MultiThreadOuptput implements SpiderOutput {
     final private static Logger             LOGGER = LogFactory
-                                                       .provide(HttpFileMutliThreadOuptput.class);
+                                                       .provide(MultiThreadOuptput.class);
     private Properties                      prop;
     private ExecutorService                 threadPool;
     private GenericObjectPool<SpiderOutput> spiderOutputPool;
@@ -51,7 +50,7 @@ public class HttpFileMutliThreadOuptput implements SpiderOutput {
 
     }
 
-    public HttpFileMutliThreadOuptput(Properties prop) {
+    public MultiThreadOuptput(Properties prop) {
         this.prop = prop;
     }
 
@@ -75,7 +74,10 @@ public class HttpFileMutliThreadOuptput implements SpiderOutput {
     @Override
     public void close() throws Exception {
         // TODO Auto-generated method stub
-
+        if(spiderOutputPool != null)
+            spiderOutputPool.close();
+        if(threadPool != null)
+            threadPool.shutdown();
     }
 
 }

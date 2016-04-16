@@ -35,6 +35,7 @@ public class SpiderManager implements Listener {
     private void init() throws Exception {
         String policyName = prop.getProperty("policyMod");
         String outputName = prop.getProperty("outputMod");
+        String mod = prop.getProperty("mod");
         
         SpiderPolicy last = null;
         SpiderPolicy tmp = null;
@@ -53,8 +54,12 @@ public class SpiderManager implements Listener {
             last = tmp;
             n++;
         }
-
-        output = SpiderOutputFactory.provide(outputName, prop);
+        
+        if(mod.equals("single"))
+            output = SpiderOutputFactory.provide(outputName, prop);
+        else
+            output = SpiderOutputFactory.provide(mod, prop);
+        
         MAXDEEP = Integer.valueOf(prop.getProperty("deep"));
 
         urlPool = new UrlPool();

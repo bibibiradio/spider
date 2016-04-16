@@ -33,6 +33,7 @@ public class SpiderMain {
         opts.addOption("stimeout", true, "socket超时时间 ms 默认30000");
         opts.addOption("output", true, "file mod输出");
         opts.addOption("thread", true, "输出线程数 默认3");
+        opts.addOption("mod",true,"线程模式 默认single (single multi)");
 
         BasicParser parser = new BasicParser();
         CommandLine cl;
@@ -99,6 +100,13 @@ public class SpiderMain {
                             "thread",
                             cl.getOptionValue("thread") != null ? cl.getOptionValue("stimeout")
                                 : "3");
+                    GlobalConfig
+                    .getConfig()
+                    .getProp()
+                    .put(
+                        "mod",
+                        cl.getOptionValue("mod") != null ? cl.getOptionValue("mod")
+                            : "single");
                     LOGGER.info("Config: " + GlobalConfig.getConfig().getProp());
 
                     SpiderManager spider = new SpiderManager(GlobalConfig.getConfig().getProp());
