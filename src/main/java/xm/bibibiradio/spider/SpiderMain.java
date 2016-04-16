@@ -98,7 +98,7 @@ public class SpiderMain {
                         .getProp()
                         .put(
                             "thread",
-                            cl.getOptionValue("thread") != null ? cl.getOptionValue("stimeout")
+                            cl.getOptionValue("thread") != null ? cl.getOptionValue("thread")
                                 : "3");
                     GlobalConfig
                     .getConfig()
