@@ -34,6 +34,13 @@
         <artifactId>commons-cli</artifactId>
         <version>1.2</version>
     </dependency>
+    <dependency>
+        <groupId>commons-pool</groupId>
+        <artifactId>commons-pool</artifactId>
+        <version>1.6</version>
+    </dependency>
+    
+    
     <!--<dependency>
         <groupId>org.apache.hyracks</groupId>
         <artifactId>hyracks-storage-am-bloomfilter</artifactId>
