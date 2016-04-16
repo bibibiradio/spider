@@ -20,21 +20,32 @@ public class HttpFileMutliThreadOuptput implements SpiderOutput {
     private int                             threadNum;
 
     private class WarpedSpiderOutputToRun implements Runnable {
-        private SpiderOutput content;
-        private WarpUrl      warpUrl;
+        private GenericObjectPool<SpiderOutput> spiderOutputPool;
+        private WarpUrl                         warpUrl;
 
-        public WarpedSpiderOutputToRun(SpiderOutput content, WarpUrl warpUrl) {
-            this.content = content;
+        public WarpedSpiderOutputToRun(WarpUrl warpUrl,
+                                       GenericObjectPool<SpiderOutput> spiderOutputPool) {
+            this.spiderOutputPool = spiderOutputPool;
             this.warpUrl = warpUrl;
         }
 
         @Override
         public void run() {
             // TODO Auto-generated method stub
+            SpiderOutput spiderOutput = null;
             try {
-                content.output(warpUrl);
+                spiderOutput = spiderOutputPool.borrowObject();
+                if (spiderOutput != null)
+                    spiderOutput.output(warpUrl);
             } catch (Exception ex) {
                 LOGGER.error("error", ex);
+            } finally {
+                try {
+                    if (spiderOutput != null)
+                        spiderOutputPool.returnObject(spiderOutput);
+                } catch (Exception ex2) {
+                    LOGGER.error("returnOutputToPool error", ex2);
+                }
             }
         }
 
@@ -65,19 +76,7 @@ public class HttpFileMutliThreadOuptput implements SpiderOutput {
     @Override
     public void output(WarpUrl warpUrl) throws Exception {
         // TODO Auto-generated method stub
-        //threadPool.submit(new DoThread(prop, warpUrl, httpSenderPool));
-        SpiderOutput spiderOutput = null;
-        try {
-            spiderOutput = spiderOutputPool.borrowObject();
-            if (spiderOutput != null)
-                threadPool.submit(new WarpedSpiderOutputToRun(spiderOutput, warpUrl));
-
-        } catch (Exception ex) {
-            LOGGER.error("error", ex);
-        } finally {
-            if (spiderOutput != null)
-                spiderOutputPool.returnObject(spiderOutput);
-        }
+        threadPool.submit(new WarpedSpiderOutputToRun(warpUrl, spiderOutputPool));
     }
 
     @Override
