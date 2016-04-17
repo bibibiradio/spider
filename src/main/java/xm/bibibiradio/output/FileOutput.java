@@ -4,7 +4,6 @@ import java.io.FileOutputStream;
 import java.util.Properties;
 
 import xm.bibibiradio.spider.WarpUrl;
-import xm.bibibiradio.util.GlobalConfig;
 
 public class FileOutput implements SpiderOutput {
     private FileOutputStream output;
