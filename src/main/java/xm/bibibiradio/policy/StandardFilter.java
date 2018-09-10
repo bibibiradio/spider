@@ -15,6 +15,15 @@ class StandardFilter implements SpiderFilter {
     private String      outputWhiteUrl, outputWhiteHtml, outputBlackUrl, outputBlackHtml;
     private String      scanWhiteUrl, scanWhiteHtml, scanBlackUrl, scanBlackHtml;
     private int         myId;
+    
+    private ArrayList<String> outputWhiteUrls;
+    private ArrayList<String> outputBlackUrls;
+    private ArrayList<String> outputWhiteContents;
+    private ArrayList<String> outputBlackContents;
+    private ArrayList<String> scanWhiteUrls;
+    private ArrayList<String> scanBlackUrls;
+    private ArrayList<String> scanWhiteContents;
+    private ArrayList<String> scanBlackContents;
 
     public StandardFilter(int myId) {
         this.myId = myId;
@@ -23,27 +32,80 @@ class StandardFilter implements SpiderFilter {
     @Override
     public boolean isNeedOutput(WarpUrl warpUrl, String html) {
         // TODO Auto-generated method stub
-        if ((outputWhiteUrl == null || warpUrl.getUrl().toString().indexOf(outputWhiteUrl) != -1)
-            && (outputBlackUrl == null || warpUrl.getUrl().toString().indexOf(outputBlackUrl) == -1)
-            && (outputWhiteHtml == null || html.indexOf(outputWhiteHtml) != -1)
-            && (outputBlackHtml == null || html.indexOf(outputBlackHtml) == -1)) {
-            return true;
-        } else {
-            return false;
-        }
+    	
+    	if(outputWhiteUrls != null) {
+	    	for(String whiteUrl : outputWhiteUrls) {
+	    		if(warpUrl.getUrl().toString().contains(whiteUrl)) {
+	    			return true;
+	    		}
+	    	}
+    	}
+    	
+    	if(outputWhiteContents != null) {
+	    	for(String whiteContent : outputWhiteContents) {
+	    		if(html.contains(whiteContent)) {
+	    			return true;
+	    		}
+	    	}
+    	}
+    	
+    	if(outputBlackUrls != null) {
+	    	for(String blackUrl : outputBlackUrls) {
+	    		if(warpUrl.getUrl().toString().contains(blackUrl)) {
+	    			return false;
+	    		}
+	    	}
+    	}
+    	
+    	if(outputBlackContents != null) {
+	    	for(String blackContent : outputBlackContents) {
+	    		if(html.contains(blackContent)) {
+	    			return false;
+	    		}
+	    	}
+    	}
+    	
+    	
+    	return true;
     }
 
     @Override
     public boolean isNeedScan(WarpUrl warpUrl, String html) {
         // TODO Auto-generated method stub
-        if ((scanWhiteUrl == null || warpUrl.getUrl().toString().indexOf(scanWhiteUrl) != -1)
-            && (scanBlackUrl == null || warpUrl.getUrl().toString().indexOf(scanBlackUrl) == -1)
-            && (scanWhiteHtml == null || html.indexOf(scanWhiteHtml) != -1)
-            && (scanBlackHtml == null || html.indexOf(scanBlackHtml) == -1)) {
-            return true;
-        } else {
-            return false;
-        }
+    	if(scanWhiteUrls != null) {
+	    	for(String whiteUrl : scanWhiteUrls) {
+	    		if(warpUrl.getUrl().toString().contains(whiteUrl)) {
+	    			return true;
+	    		}
+	    	}
+    	}
+    	
+    	if(scanWhiteContents != null) {
+	    	for(String whiteContent : scanWhiteContents) {
+	    		if(html.contains(whiteContent)) {
+	    			return true;
+	    		}
+	    	}
+    	}
+    	
+    	if(scanBlackUrls != null) {
+	    	for(String blackUrl : scanBlackUrls) {
+	    		if(warpUrl.getUrl().toString().contains(blackUrl)) {
+	    			return false;
+	    		}
+	    	}
+    	}
+    	
+    	if(scanBlackContents != null) {
+	    	for(String blackContent : scanBlackContents) {
+	    		if(html.contains(blackContent)) {
+	    			return false;
+	    		}
+	    	}
+    	}
+    	
+    	
+    	return true;
     }
 
     @Override
@@ -62,6 +124,38 @@ class StandardFilter implements SpiderFilter {
             scanBlackUrl = config.get(10).equals("") ? null : config.get(10);
             scanWhiteHtml = config.get(11).equals("") ? null : config.get(11);
             scanBlackHtml = config.get(12).equals("") ? null : config.get(12);
+            
+            if(outputWhiteUrl != null) {
+            	outputWhiteUrls = PolicyParser.getPolicyParser().parseContentTag(outputWhiteUrl);
+            }
+            
+            if(outputWhiteHtml != null) {
+            	outputWhiteContents = PolicyParser.getPolicyParser().parseContentTag(outputWhiteHtml);
+            }
+            
+            if(outputBlackUrl != null) {
+            	outputBlackUrls = PolicyParser.getPolicyParser().parseContentTag(outputBlackUrl);
+            }
+            
+            if(outputBlackHtml != null) {
+            	outputBlackContents = PolicyParser.getPolicyParser().parseContentTag(outputBlackHtml);
+            }
+            
+            if(scanWhiteUrl != null) {
+            	scanWhiteUrls = PolicyParser.getPolicyParser().parseContentTag(scanWhiteUrl);
+            }
+            
+            if(scanWhiteHtml != null) {
+            	scanWhiteContents = PolicyParser.getPolicyParser().parseContentTag(scanWhiteHtml);
+            }
+            
+            if(scanBlackUrl != null) {
+            	scanBlackUrls = PolicyParser.getPolicyParser().parseContentTag(scanBlackUrl);
+            }
+            
+            if(scanBlackHtml != null) {
+            	scanBlackContents = PolicyParser.getPolicyParser().parseContentTag(scanBlackHtml);
+            }
         } catch (Exception ex) {
             LOGGER.error("error", ex);
         }
@@ -140,7 +234,75 @@ class StandardFilter implements SpiderFilter {
         this.scanBlackHtml = scanBlackHtml;
     }
 
-    @Override
+    public ArrayList<String> getOutputWhiteUrls() {
+		return outputWhiteUrls;
+	}
+
+	public void setOutputWhiteUrls(ArrayList<String> outputWhiteUrls) {
+		this.outputWhiteUrls = outputWhiteUrls;
+	}
+
+	public ArrayList<String> getOutputBlackUrls() {
+		return outputBlackUrls;
+	}
+
+	public void setOutputBlackUrls(ArrayList<String> outputBlackUrls) {
+		this.outputBlackUrls = outputBlackUrls;
+	}
+
+	public ArrayList<String> getOutputWhiteContents() {
+		return outputWhiteContents;
+	}
+
+	public void setOutputWhiteContents(ArrayList<String> outputWhiteContents) {
+		this.outputWhiteContents = outputWhiteContents;
+	}
+
+	public ArrayList<String> getOutputBlackContents() {
+		return outputBlackContents;
+	}
+
+	public void setOutputBlackContents(ArrayList<String> outputBlackContents) {
+		this.outputBlackContents = outputBlackContents;
+	}
+
+	public ArrayList<String> getScanWhiteUrls() {
+		return scanWhiteUrls;
+	}
+
+	public void setScanWhiteUrls(ArrayList<String> scanWhiteUrls) {
+		this.scanWhiteUrls = scanWhiteUrls;
+	}
+
+	public ArrayList<String> getScanBlackUrls() {
+		return scanBlackUrls;
+	}
+
+	public void setScanBlackUrls(ArrayList<String> scanBlackUrls) {
+		this.scanBlackUrls = scanBlackUrls;
+	}
+
+	public ArrayList<String> getScanWhiteContents() {
+		return scanWhiteContents;
+	}
+
+	public void setScanWhiteContents(ArrayList<String> scanWhiteContents) {
+		this.scanWhiteContents = scanWhiteContents;
+	}
+
+	public ArrayList<String> getScanBlackContents() {
+		return scanBlackContents;
+	}
+
+	public void setScanBlackContents(ArrayList<String> scanBlackContents) {
+		this.scanBlackContents = scanBlackContents;
+	}
+
+	public int getMyId() {
+		return myId;
+	}
+
+	@Override
     public void setMyId(int myId) {
         // TODO Auto-generated method stub
         this.myId = myId;

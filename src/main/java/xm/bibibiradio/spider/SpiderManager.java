@@ -6,11 +6,16 @@ import org.apache.log4j.Logger;
 
 import com.bibibiradio.httpsender.ResponseData;
 
+import xm.bibibiradio.checkpoint.DefaultCheckPointFactory;
+import xm.bibibiradio.checkpoint.SpiderCheckPoint;
+import xm.bibibiradio.checkpoint.SpiderCheckPointFactory;
 import xm.bibibiradio.listener.Listener;
 import xm.bibibiradio.listener.Message;
-import xm.bibibiradio.listener.Notifer;
-import xm.bibibiradio.output.SpiderOutput;
+import xm.bibibiradio.listener.NotiferProxy;
 import xm.bibibiradio.output.SpiderOutputFactory;
+import xm.bibibiradio.output.DefaultSpiderOutputFactory;
+import xm.bibibiradio.output.SpiderOutput;
+import xm.bibibiradio.policy.DefaultSpiderPolicyFactory;
 import xm.bibibiradio.policy.SpiderPolicy;
 import xm.bibibiradio.policy.SpiderPolicyFactory;
 import xm.bibibiradio.util.LogFactory;
@@ -24,17 +29,34 @@ public class SpiderManager implements Listener {
     private UrlPool             urlPool;
     private WarpedHttpSender    httpSender;
     private SpiderOutput        output;
+    private SpiderCheckPoint	spiderCheckPoint;
+    private SpiderPolicyFactory spiderPolicyFactory;
+    private SpiderOutputFactory spiderOutputFactory;
+    private SpiderCheckPointFactory spiderCheckPointFactory;
+    private CheckPointHandler checkPointHandler;
 
     private Properties          prop;
-
-    public SpiderManager(Properties prop) throws Exception {
+    
+    public SpiderManager(Properties prop) throws Exception{
+    	this.prop=prop;
+    	this.spiderPolicyFactory=new DefaultSpiderPolicyFactory();
+        this.spiderOutputFactory=new DefaultSpiderOutputFactory();
+        this.spiderCheckPointFactory=new DefaultCheckPointFactory();
+        init();
+    }
+    
+    public SpiderManager(Properties prop,SpiderPolicyFactory spiderPolicyFactory,SpiderOutputFactory spiderOutputFactory,SpiderCheckPointFactory spiderCheckPointFactory) throws Exception {
         this.prop = prop;
+        this.spiderPolicyFactory=spiderPolicyFactory;
+        this.spiderOutputFactory=spiderOutputFactory;
+        this.spiderCheckPointFactory=spiderCheckPointFactory;
         init();
     }
 
     private void init() throws Exception {
         String policyName = prop.getProperty("policyMod");
         String outputName = prop.getProperty("outputMod");
+        String checkPointMod = prop.getProperty("checkpointMod");
         String mod = prop.getProperty("mod");
         
         SpiderPolicy last = null;
@@ -42,28 +64,40 @@ public class SpiderManager implements Listener {
         String[] policys = policyName.split(",");
         int n = 0;
         for(String pName : policys){
-            tmp = SpiderPolicyFactory.provide(pName, prop);
+            tmp = spiderPolicyFactory.provide(pName, prop ,n);
             if(tmp != null && n == 0){
                 policy = tmp;
             }
             if(last != null && tmp != null){
                 last.setNext(tmp);
             }
-            ((Notifer) tmp).register(SpiderPolicy.NEEDOUTPUT, this);
-            ((Notifer) tmp).register(SpiderPolicy.NEEDSCAN, this);
             last = tmp;
             n++;
         }
         
+        NotiferProxy.getDefaultNotiferProxy().register(SpiderPolicy.NEEDOUTPUT, this);
+        NotiferProxy.getDefaultNotiferProxy().register(SpiderPolicy.NEEDSCAN, this);
+        
         if(mod.equals("single"))
-            output = SpiderOutputFactory.provide(outputName, prop);
+            output = spiderOutputFactory.provide(outputName, prop);
         else
-            output = SpiderOutputFactory.provide(mod, prop);
+            output = spiderOutputFactory.provide(mod, prop);
+        
+        spiderCheckPoint = spiderCheckPointFactory.provide(checkPointMod);
+        urlPool = spiderCheckPoint.restoreCheckPoint(prop);
         
         MAXDEEP = Integer.valueOf(prop.getProperty("deep"));
-
-        urlPool = new UrlPool();
+        
+        if(urlPool == null)
+        	urlPool = new UrlPool();
+        
         httpSender = new WarpedHttpSender(prop);
+        
+        checkPointHandler = new CheckPointHandler();
+        checkPointHandler.setCheckPoint(spiderCheckPoint);
+        checkPointHandler.setUrlPool(urlPool);
+        checkPointHandler.setProp(prop);
+        Runtime.getRuntime().addShutdownHook(checkPointHandler);
     }
 
     public void spider(String url) {

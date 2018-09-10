@@ -9,8 +9,12 @@ public class GlobalConfig {
     
     static public GlobalConfig getConfig(){
         if(config == null){
-            config = new GlobalConfig();
-            config.init();
+        	synchronized (GlobalConfig.class){
+        		if(config == null) {
+		            config = new GlobalConfig();
+		            config.init();
+        		}
+        	}
         }
         return config;
     }
@@ -20,9 +24,7 @@ public class GlobalConfig {
     }
     
     private void init(){
-        prop.put("host", "bilibili.com");
-        prop.put("filterUrl", "video");
-        prop.put("output", "/Users/xiaoleixl/projects/java/spider/test.txt");
+    	
     }
 
     public Properties getProp() {

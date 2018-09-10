@@ -1,17 +1,19 @@
 package xm.bibibiradio.spider;
 
+import java.io.Serializable;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
 
 import xm.bibibiradio.util.LogFactory;
 
-public class WarpUrl {
+public class WarpUrl implements Serializable{
     //private WarpUrl parent;
-    final private Logger LOGGER = LogFactory.provide(WarpUrl.class);
+    final static private Logger LOGGER = LogFactory.provide(WarpUrl.class);
     private URL url;
     private int deep;
     private String content;
+    private int resourceHash;
     public WarpUrl(String urlStr,WarpUrl parent){
         if(parent == null){
             deep = 0;
@@ -58,5 +60,11 @@ public class WarpUrl {
     public void setContent(String content) {
         this.content = content;
     }
+	public int getResourceHash() {
+		return resourceHash;
+	}
+	public void setResourceHash(int resourceHash) {
+		this.resourceHash = resourceHash;
+	}
     
 }

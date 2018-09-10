@@ -7,6 +7,9 @@ import org.apache.commons.cli.Options;
 import org.apache.log4j.Logger;
 
 import xm.bibibiradio.util.LogFactory;
+import xm.bibibiradio.checkpoint.DefaultCheckPointFactory;
+import xm.bibibiradio.output.DefaultSpiderOutputFactory;
+import xm.bibibiradio.policy.DefaultSpiderPolicyFactory;
 import xm.bibibiradio.util.GlobalConfig;
 
 public class SpiderMain {
@@ -109,7 +112,7 @@ public class SpiderMain {
                             : "single");
                     LOGGER.info("Config: " + GlobalConfig.getConfig().getProp());
 
-                    SpiderManager spider = new SpiderManager(GlobalConfig.getConfig().getProp());
+                    SpiderManager spider = new SpiderManager(GlobalConfig.getConfig().getProp(),new DefaultSpiderPolicyFactory(),new DefaultSpiderOutputFactory(),new DefaultCheckPointFactory());
                     spider.spider(GlobalConfig.getConfig().getProp().getProperty("url"));
                 }
             }

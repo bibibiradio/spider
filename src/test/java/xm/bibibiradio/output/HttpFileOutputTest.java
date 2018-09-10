@@ -23,8 +23,8 @@ public class HttpFileOutputTest {
     }
 
     @Test
-    public void test() {
-        SpiderOutput t = SpiderOutputFactory.provide("httpfile",GlobalConfig.getConfig().getProp());
+    public void test() throws Exception{
+        SpiderOutput t = new DefaultSpiderOutputFactory().provide("httpfile",GlobalConfig.getConfig().getProp());
         GlobalConfig.getConfig().getProp().put("interval", "1000");
         GlobalConfig.getConfig().getProp().put("retry", "3");
         GlobalConfig.getConfig().getProp().put("ctimeout", "10000");

@@ -33,8 +33,6 @@ public class StandardPolicy implements SpiderPolicy, Notifer, ExecuteChain {
 
     private int          myId               = -1;
 
-    private Notifer      notifer;
-
     private SpiderFilter filter;
 
     public StandardPolicy(Properties prop, int myId) throws Exception {
@@ -97,8 +95,6 @@ public class StandardPolicy implements SpiderPolicy, Notifer, ExecuteChain {
                 }
             }
         }
-
-        notifer = new NotiferProxy();
     }
 
     @Override
@@ -116,9 +112,11 @@ public class StandardPolicy implements SpiderPolicy, Notifer, ExecuteChain {
                     if (getContentTagLay2 == 0) {
                         warpUrl = new WarpUrl(inner.text(), url);
                         warpUrl.setContent(inner.text());
+                        warpUrl.setResourceHash(warpUrl.getContent().hashCode());
                     } else {
                         warpUrl = new WarpUrl(inner.attr(getContentTagTarget), url);
                         warpUrl.setContent(inner.attr(getContentTagTarget));
+                        warpUrl.setResourceHash(warpUrl.getContent().hashCode());
                     }
                     if (warpUrl.getUrl() == null)
                         continue;
@@ -130,9 +128,11 @@ public class StandardPolicy implements SpiderPolicy, Notifer, ExecuteChain {
                 if (getContentTagLay2 == 0) {
                     warpUrl = new WarpUrl(ele.text(), url);
                     warpUrl.setContent(ele.text());
+                    warpUrl.setResourceHash(warpUrl.getContent().hashCode());
                 } else {
                     warpUrl = new WarpUrl(ele.attr(getContentTagTarget), url);
                     warpUrl.setContent(ele.attr(getContentTagTarget));
+                    warpUrl.setResourceHash(warpUrl.getContent().hashCode());
                 }
 
                 if (warpUrl.getUrl() == null)
@@ -148,10 +148,12 @@ public class StandardPolicy implements SpiderPolicy, Notifer, ExecuteChain {
                 Elements inners = ele.select(scanContentTagCssQuery);
                 for (Element inner : inners) {
                     WarpUrl warpUrl;
-                    if (scanContentTagLay2 == 0)
+                    if (scanContentTagLay2 == 0) {
                         warpUrl = new WarpUrl(inner.text(), url);
-                    else {
+                        warpUrl.setResourceHash(inner.text().hashCode());
+                    } else {
                         warpUrl = new WarpUrl(inner.attr(scanContentTagTarget), url);
+                        warpUrl.setResourceHash(inner.attr(scanContentTagTarget).hashCode());
                     }
                     if (warpUrl.getUrl() == null)
                         continue;
@@ -160,10 +162,13 @@ public class StandardPolicy implements SpiderPolicy, Notifer, ExecuteChain {
                 }
             } else {
                 WarpUrl warpUrl;
-                if (scanContentTagLay2 == 0)
+                if (scanContentTagLay2 == 0) {
                     warpUrl = new WarpUrl(ele.text(), url);
-                else
+                    warpUrl.setResourceHash(ele.text().hashCode());
+                } else {
                     warpUrl = new WarpUrl(ele.attr(scanContentTagTarget), url);
+                    warpUrl.setResourceHash(ele.attr(scanContentTagTarget).hashCode());
+                }
 
                 if (warpUrl.getUrl() == null)
                     continue;
@@ -186,13 +191,13 @@ public class StandardPolicy implements SpiderPolicy, Notifer, ExecuteChain {
     @Override
     public void register(int eventId, Listener listener) {
         // TODO Auto-generated method stub
-        notifer.register(eventId, listener);
+        NotiferProxy.getDefaultNotiferProxy().register(eventId, listener);
     }
 
     @Override
     public void notify(int eventId, Object notifyBody) {
         // TODO Auto-generated method stub
-        notifer.notify(eventId, notifyBody);
+    	NotiferProxy.getDefaultNotiferProxy().notify(eventId, notifyBody);
     }
 
     public int getMyId() {

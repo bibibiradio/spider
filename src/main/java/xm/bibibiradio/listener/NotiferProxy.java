@@ -7,6 +7,18 @@ import java.util.Map;
 public class NotiferProxy implements Notifer {
     private Map<Integer,ArrayList<Listener>> listenerMap;
     
+    static private NotiferProxy singleNotiferProxy;
+    static public NotiferProxy getDefaultNotiferProxy() {
+    	if(singleNotiferProxy == null) {
+    		synchronized (NotiferProxy.class){
+				if(singleNotiferProxy == null){
+					singleNotiferProxy = new NotiferProxy();
+				}
+			}
+    	}
+    	return singleNotiferProxy;
+    }
+    
     public NotiferProxy(){
         listenerMap = new HashMap<Integer,ArrayList<Listener>>();
     }
