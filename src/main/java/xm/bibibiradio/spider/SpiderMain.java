@@ -30,6 +30,8 @@ public class SpiderMain {
         opts.addOption("basePath", true, "爬取文件输出目录");
         opts.addOption("cookie", true, "设置Cookie 默认空");
         opts.addOption("ua", true, "设置ua 默认空");
+        opts.addOption("headerFile", true, "header文件");
+        opts.addOption("headerFileSplit", true, "header分隔符");
         opts.addOption("interval", true, "发包间隔时间 ms 默认1000");
         opts.addOption("retry", true, "发包失败重试次数 默认3");
         opts.addOption("ctimeout", true, "连接超时 ms 默认10000");
@@ -37,6 +39,11 @@ public class SpiderMain {
         opts.addOption("output", true, "file mod输出");
         opts.addOption("thread", true, "输出线程数 默认3");
         opts.addOption("mod",true,"线程模式 默认single (single multi)");
+        opts.addOption("checkPeerCert",true,"是否校验对方SSL证书");
+        opts.addOption("checkpointMod",true,"checkPoint模式");
+        opts.addOption("ckl",true,"checkPointLable");
+        opts.addOption("proxyIp",true,"代理IP");
+        opts.addOption("proxyPort",true,"代理端口");
 
         BasicParser parser = new BasicParser();
         CommandLine cl;
@@ -110,6 +117,60 @@ public class SpiderMain {
                         "mod",
                         cl.getOptionValue("mod") != null ? cl.getOptionValue("mod")
                             : "single");
+                    GlobalConfig
+                            .getConfig()
+                            .getProp()
+                            .put(
+                                    "checkPeerCert",
+                                    cl.getOptionValue("checkPeerCert") != null ? cl.getOptionValue("checkPeerCert")
+                                            : "false");
+
+                    GlobalConfig
+                            .getConfig()
+                            .getProp()
+                            .put(
+                                    "checkpointMod",
+                                    cl.getOptionValue("checkpointMod") != null ? cl.getOptionValue("checkpointMod")
+                                            : "None");
+
+                    GlobalConfig
+                            .getConfig()
+                            .getProp()
+                            .put(
+                                    "ckl",
+                                    cl.getOptionValue("ckl") != null ? cl.getOptionValue("ckl")
+                                            : "checkpoint.spider");
+                    GlobalConfig
+                            .getConfig()
+                            .getProp()
+                            .put(
+                                    "headerFile",
+                                    cl.getOptionValue("headerFile") != null ? cl.getOptionValue("headerFile")
+                                            : "None");
+
+                    GlobalConfig
+                            .getConfig()
+                            .getProp()
+                            .put(
+                                    "headerFileSplit",
+                                    cl.getOptionValue("headerFileSplit") != null ? cl.getOptionValue("headerFileSplit")
+                                            : "\n");
+
+                    GlobalConfig
+                            .getConfig()
+                            .getProp()
+                            .put(
+                                    "proxyIp",
+                                    cl.getOptionValue("proxyIp") != null ? cl.getOptionValue("proxyIp")
+                                            : "None");
+
+                    GlobalConfig
+                            .getConfig()
+                            .getProp()
+                            .put(
+                                    "proxyPort",
+                                    cl.getOptionValue("proxyPort") != null ? cl.getOptionValue("proxyPort")
+                                            : "None");
                     LOGGER.info("Config: " + GlobalConfig.getConfig().getProp());
 
                     SpiderManager spider = new SpiderManager(GlobalConfig.getConfig().getProp(),new DefaultSpiderPolicyFactory(),new DefaultSpiderOutputFactory(),new DefaultCheckPointFactory());

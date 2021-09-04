@@ -64,8 +64,7 @@ class StandardFilter implements SpiderFilter {
 	    		}
 	    	}
     	}
-    	
-    	
+
     	return true;
     }
 

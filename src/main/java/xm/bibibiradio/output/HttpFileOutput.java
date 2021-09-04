@@ -44,7 +44,10 @@ public class HttpFileOutput implements SpiderOutput {
             ResponseData res = httpSender.send(warpUrl);
             if (res == null || res.getStatusCode() >= 400) {
                 LOGGER.info(new StringBuilder("GET ").append(warpUrl.getUrl().toString()).append(
-                    " Fail"));
+                        " Fail"));
+                if (res != null) {
+                    LOGGER.info(new String(res.getResponseContent(), "UTF-8"));
+                }
                 return;
             }
 

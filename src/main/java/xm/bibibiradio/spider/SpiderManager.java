@@ -82,9 +82,11 @@ public class SpiderManager implements Listener {
             output = spiderOutputFactory.provide(outputName, prop);
         else
             output = spiderOutputFactory.provide(mod, prop);
-        
-        spiderCheckPoint = spiderCheckPointFactory.provide(checkPointMod);
-        urlPool = spiderCheckPoint.restoreCheckPoint(prop);
+
+        if(!checkPointMod.equals("None")) {
+            spiderCheckPoint = spiderCheckPointFactory.provide(checkPointMod);
+            urlPool = spiderCheckPoint.restoreCheckPoint(prop);
+        }
         
         MAXDEEP = Integer.valueOf(prop.getProperty("deep"));
         
@@ -92,12 +94,14 @@ public class SpiderManager implements Listener {
         	urlPool = new UrlPool();
         
         httpSender = new WarpedHttpSender(prop);
-        
-        checkPointHandler = new CheckPointHandler();
-        checkPointHandler.setCheckPoint(spiderCheckPoint);
-        checkPointHandler.setUrlPool(urlPool);
-        checkPointHandler.setProp(prop);
-        Runtime.getRuntime().addShutdownHook(checkPointHandler);
+
+        if(!checkPointMod.equals("None")) {
+            checkPointHandler = new CheckPointHandler();
+            checkPointHandler.setCheckPoint(spiderCheckPoint);
+            checkPointHandler.setUrlPool(urlPool);
+            checkPointHandler.setProp(prop);
+            Runtime.getRuntime().addShutdownHook(checkPointHandler);
+        }
     }
 
     public void spider(String url) {
@@ -106,6 +110,8 @@ public class SpiderManager implements Listener {
             return;
         }
 
+        LOGGER.info(new StringBuilder().append("will spider: ").append(
+                warpUrl.getUrl().toString()));
         urlPool.add(warpUrl);
 
         try {
@@ -117,6 +123,7 @@ public class SpiderManager implements Listener {
 
         while (null != (warpUrl = urlPool.poll()) && warpUrl.getDeep() < MAXDEEP + 1) {
             try {
+                LOGGER.info("poll " + warpUrl.getUrl().toString());
                 ResponseData res = httpSender.send(warpUrl);
                 if (res == null || res.getStatusCode() >= 400) {
                     continue;
@@ -154,6 +161,8 @@ public class SpiderManager implements Listener {
     public void notifyDoNeedOutput(WarpUrl warpUrl) {
         try {
             if (urlPool.addAlreadyOutput(warpUrl)) {
+                LOGGER.info(new StringBuilder().append("will get: ").append(
+                        warpUrl.getUrl().toString()));
                 output.output(warpUrl);
             }
         } catch (Exception ex) {
@@ -162,8 +171,9 @@ public class SpiderManager implements Listener {
     }
 
     public void notifyDoNeedScan(WarpUrl warpUrl) {
-        if (urlPool.add(warpUrl))
-            LOGGER.info(new StringBuilder().append("will spider ").append(
-                warpUrl.getUrl().toString()));
+        if (urlPool.add(warpUrl)) {
+            LOGGER.info(new StringBuilder().append("will spider: ").append(
+                    warpUrl.getUrl().toString()));
+        }
     }
 }

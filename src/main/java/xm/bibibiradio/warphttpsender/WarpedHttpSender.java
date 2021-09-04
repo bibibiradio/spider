@@ -31,9 +31,17 @@ public class WarpedHttpSender {
             httpSender.setTimeout(Long.valueOf(Integer.valueOf(this.prop.getProperty("ctimeout"))));
             httpSender.setSoTimeout(Long.valueOf(Integer.valueOf(this.prop.getProperty("stimeout"))));
             httpSender.setAutoRedirect(true);
-            
+            httpSender.setCheckPeerCert(Boolean.valueOf(this.prop.getProperty("checkPeerCert")));
+            if(!this.prop.getProperty("proxyIp").equals("None")){
+                httpSender.setHttpProxy(this.prop.getProperty("proxyIp"),Integer.valueOf(this.prop.getProperty("proxyPort")));
+            }
+
             httpSender.start();
-            
+
+            if(!this.prop.getProperty("headerFile").equals("None")){
+                header = HeaderParser.parseFile(this.prop.getProperty("headerFile"),this.prop.getProperty("headerFileSplit"));
+            }
+
             cookie = this.prop.getProperty("cookie");
             ua = this.prop.getProperty("ua");
             
@@ -53,7 +61,7 @@ public class WarpedHttpSender {
         }
     }
     
-    public ResponseData send(WarpUrl warpUrl){
-        return httpSender.send(warpUrl.getUrl().toString(), 0, null,null);
+    public ResponseData send(WarpUrl warpUrl) throws Exception{
+        return httpSender.send(warpUrl.getUrl().toString(), 0, header,null);
     }
 }
